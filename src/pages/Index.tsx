@@ -28,13 +28,10 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import DemoModal from "@/components/DemoModal";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import overwork from "@/assets/Gemini_Generated_Overwork.png";
-import paperworkBurden from "@/assets/Gemini_Generated_Paperwork_Burden.png";
-import manualProcess from "@/assets/Gemini_Generated_Manual_Process.png";
 import digitalSolution from "@/assets/Gemini_Generated_Digital_Solution.png";
-import bagChaos from "@/assets/Gemini_Generated_bag_chaos.png";
 import logoImg from "@/assets/Brief_Insights_name_color.png";
 import heroVideo from "@/assets/Video_Generation_for_Counselor_Paperwork.mp4";
+import ProblemPage from "@/components/Organism/ProblemPage";
 
 // ─── AnimatedWords ────────────────────────────────────────────────────────────
 const AnimatedWords = ({
@@ -63,7 +60,11 @@ const AnimatedWords = ({
         };
         if (useAnimateMode) {
           return (
-            <motion.span key={i} {...sharedProps} animate={{ opacity: 1, y: 0, x: 0 }}>
+            <motion.span
+              key={i}
+              {...sharedProps}
+              animate={{ opacity: 1, y: 0, x: 0 }}
+            >
               {word}
             </motion.span>
           );
@@ -109,7 +110,10 @@ const Navbar = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
               src={logoImg}
               alt="BriefInsights"
               className="h-16 w-auto object-contain dark:brightness-[1.15]"
-              style={{ transform: "translateY(-14px) scale(1.25)", transformOrigin: "top center" }}
+              style={{
+                transform: "translateY(-14px) scale(1.25)",
+                transformOrigin: "top center",
+              }}
             />
           </div>
         </a>
@@ -117,7 +121,11 @@ const Navbar = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
         {/* Desktop nav links */}
         <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
           {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className="hover:text-foreground transition-colors">
+            <a
+              key={link.href}
+              href={link.href}
+              className="hover:text-foreground transition-colors"
+            >
               {link.label}
             </a>
           ))}
@@ -138,12 +146,19 @@ const Navbar = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
           {/* Mobile hamburger */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden h-9 w-9 ml-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden h-9 w-9 ml-1"
+              >
                 <Menu className="h-4 w-4" />
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-64 flex flex-col gap-6 pt-12">
+            <SheetContent
+              side="right"
+              className="w-64 flex flex-col gap-6 pt-12"
+            >
               <nav className="flex flex-col gap-4">
                 {navLinks.map((link) => (
                   <a
@@ -253,7 +268,9 @@ const Hero = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
         transition={{ delay: 1.5, duration: 1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="text-xs text-white/40 uppercase tracking-widest">Scroll</span>
+        <span className="text-xs text-white/40 uppercase tracking-widest">
+          Scroll
+        </span>
         <motion.div
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
@@ -284,112 +301,17 @@ const StatsBar = () => {
         className="max-w-6xl mx-auto grid grid-cols-3 gap-px bg-foreground/10 rounded-xl overflow-hidden border border-foreground/10"
       >
         {stats.map((s, i) => (
-          <div key={i} className="bg-background/80 px-8 py-7 flex flex-col gap-1">
-            <span className="text-3xl font-bold text-primary tracking-tight">{s.value}</span>
+          <div
+            key={i}
+            className="bg-background/80 px-8 py-7 flex flex-col gap-1"
+          >
+            <span className="text-3xl font-bold text-primary tracking-tight">
+              {s.value}
+            </span>
             <span className="text-sm text-muted-foreground">{s.label}</span>
           </div>
         ))}
       </motion.div>
-    </section>
-  );
-};
-
-// ─── Problem Visual ─────────────────────────────────────────────────────────
-const ProblemVisual = () => {
-  const { t } = useTranslation();
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [40, -40]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.97, 1, 0.97]);
-
-  return (
-    <section id="problem" ref={ref} className="bg-background px-6 py-24">
-      <div className="max-w-6xl mx-auto">
-        {/* Main parallax image — the emotional peak: exhausted counselor working late */}
-        <motion.div
-          style={{ scale }}
-          className="relative rounded-2xl overflow-hidden border border-border/40 mb-6"
-        >
-          <motion.img
-            style={{ y, height: "480px", objectPosition: "center 40%" }}
-            src={bagChaos}
-            alt="Client arriving with a bag full of chaotic paper documents"
-            className="w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-
-          <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3"
-            >
-              {t("problem.label")}
-            </motion.p>
-            <motion.h2
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="text-3xl md:text-5xl font-bold tracking-tight text-foreground max-w-2xl leading-tight"
-            >
-              {t("problem.title")}
-            </motion.h2>
-          </div>
-        </motion.div>
-
-        {/* Two-column caption row */}
-        <div className="grid md:grid-cols-2 gap-4">
-          {/* Left card — manual review image: close-up of magnifying glass on documents */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="relative rounded-xl overflow-hidden border border-border/40"
-            style={{ minHeight: "160px" }}
-          >
-            <img
-              src={manualProcess}
-              alt="Close-up of manual document review with magnifying glass"
-              className="absolute inset-0 w-full h-full object-cover opacity-50"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-background/90 to-background/40" />
-            <div className="relative z-10 p-6 flex gap-4 items-start">
-              <Clock className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-              <div>
-                <h4 className="text-sm font-semibold text-foreground mb-1">{t("problem.hoursTitle")}</h4>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {t("problem.hoursDesc")}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Right card — paperwork burden: stressed counselor with stacks of binders */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="relative rounded-xl overflow-hidden border border-border/40"
-            style={{ minHeight: "160px" }}
-          >
-            <img
-              src={paperworkBurden}
-              alt="Counselor overwhelmed by stacks of binders and paper files"
-              className="absolute inset-0 w-full h-full object-cover opacity-50"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-background/90 to-background/40" />
-            <div className="relative z-10 p-6">
-              <h4 className="text-sm font-semibold text-foreground mb-1">{t("problem.debtTitle")}</h4>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {t("problem.debtDesc")}
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </div>
     </section>
   );
 };
@@ -423,8 +345,16 @@ const Features = () => {
           {t("features.label")}
         </motion.p>
         <h2 className="font-serif italic text-5xl md:text-6xl text-foreground leading-tight">
-          <AnimatedWords text={t("features.title1")} className="block" delay={0.1} />
-          <AnimatedWords text={t("features.title2")} className="block text-foreground/50" delay={0.3} />
+          <AnimatedWords
+            text={t("features.title1")}
+            className="block"
+            delay={0.1}
+          />
+          <AnimatedWords
+            text={t("features.title2")}
+            className="block text-foreground/50"
+            delay={0.3}
+          />
         </h2>
       </div>
 
@@ -446,7 +376,9 @@ const Features = () => {
                 transition={{ delay: i * 0.1 }}
                 className="flex items-center justify-between"
               >
-                <span className="text-muted-foreground/60 w-24 shrink-0">{row.label}</span>
+                <span className="text-muted-foreground/60 w-24 shrink-0">
+                  {row.label}
+                </span>
                 <span className="text-foreground flex-1">{row.value}</span>
                 <span className="text-status-online">{row.conf}</span>
               </motion.div>
@@ -481,11 +413,15 @@ const Features = () => {
                 key={item.label}
                 className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-surface-2 border border-border/50 text-xs text-muted-foreground"
               >
-                <span className={`h-1.5 w-1.5 rounded-full ${item.linked ? "bg-status-online" : "bg-primary"}`} />
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${item.linked ? "bg-status-online" : "bg-primary"}`}
+                />
                 {item.label}
               </div>
             ))}
-            <div className="text-xs text-muted-foreground/50 ml-auto">{t("bentoMock.masterCase")}</div>
+            <div className="text-xs text-muted-foreground/50 ml-auto">
+              {t("bentoMock.masterCase")}
+            </div>
           </div>
         </BentoCard>
 
@@ -554,7 +490,9 @@ const BeforeAfter = () => {
           >
             <div className="flex items-center gap-2 mb-5">
               <span className="h-2 w-2 rounded-full bg-destructive" />
-              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{t("beforeAfter.beforeLabel")}</span>
+              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                {t("beforeAfter.beforeLabel")}
+              </span>
             </div>
             <ul className="space-y-4">
               {beforeItems.map((item, i) => (
@@ -596,7 +534,9 @@ const BeforeAfter = () => {
           >
             <div className="flex items-center gap-2 mb-5">
               <span className="h-2 w-2 rounded-full bg-status-online animate-pulse" />
-              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{t("beforeAfter.afterLabel")}</span>
+              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                {t("beforeAfter.afterLabel")}
+              </span>
             </div>
             <ul className="space-y-4">
               {afterItems.map((item, i) => (
@@ -625,8 +565,12 @@ const BeforeAfter = () => {
           className="mt-6 bento-card bento-card-frosted rounded-xl p-6"
         >
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs text-muted-foreground font-mono">{t("beforeAfter.timePerCase")}</span>
-            <span className="text-xs font-semibold text-status-online">{t("beforeAfter.reduction")}</span>
+            <span className="text-xs text-muted-foreground font-mono">
+              {t("beforeAfter.timePerCase")}
+            </span>
+            <span className="text-xs font-semibold text-status-online">
+              {t("beforeAfter.reduction")}
+            </span>
           </div>
           <div className="space-y-3">
             <div>
@@ -706,8 +650,12 @@ const About = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
             </div>
             <div className="p-8 flex flex-col gap-4">
-              <p className="text-sm text-muted-foreground leading-relaxed">{t("about.mission")}</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">{t("about.team")}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {t("about.mission")}
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {t("about.team")}
+              </p>
             </div>
           </motion.div>
 
@@ -726,9 +674,16 @@ const About = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
                 { label: t("about.stat3Label"), value: t("about.stat3Value") },
                 { label: t("about.stat4Label"), value: t("about.stat4Value") },
               ].map((row) => (
-                <div key={row.label} className="flex items-center justify-between py-4 first:pt-0 last:pb-0">
-                  <span className="text-sm text-muted-foreground">{row.label}</span>
-                  <span className="text-sm font-semibold text-foreground text-right">{row.value}</span>
+                <div
+                  key={row.label}
+                  className="flex items-center justify-between py-4 first:pt-0 last:pb-0"
+                >
+                  <span className="text-sm text-muted-foreground">
+                    {row.label}
+                  </span>
+                  <span className="text-sm font-semibold text-foreground text-right">
+                    {row.value}
+                  </span>
                 </div>
               ))}
             </div>
@@ -750,7 +705,6 @@ const About = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
             </div>
           </motion.div>
         </div>
-
       </div>
     </section>
   );
@@ -761,15 +715,46 @@ const Security = () => {
   const { t } = useTranslation();
 
   const credentials = [
-    { icon: ShieldCheck, title: t("security.gdprTitle"), desc: t("security.gdprDesc") },
-    { icon: Server, title: t("security.hostingTitle"), desc: t("security.hostingDesc") },
-    { icon: Trash2, title: t("security.retentionTitle"), desc: t("security.retentionDesc") },
-    { icon: Landmark, title: t("security.churchTitle"), desc: t("security.churchDesc") },
-    { icon: Lock, title: t("security.encryptionTitle"), desc: t("security.encryptionDesc") },
-    { icon: Building2, title: t("security.infraTitle"), desc: t("security.infraDesc") },
+    {
+      icon: ShieldCheck,
+      title: t("security.gdprTitle"),
+      desc: t("security.gdprDesc"),
+    },
+    {
+      icon: Server,
+      title: t("security.hostingTitle"),
+      desc: t("security.hostingDesc"),
+    },
+    {
+      icon: Trash2,
+      title: t("security.retentionTitle"),
+      desc: t("security.retentionDesc"),
+    },
+    {
+      icon: Landmark,
+      title: t("security.churchTitle"),
+      desc: t("security.churchDesc"),
+    },
+    {
+      icon: Lock,
+      title: t("security.encryptionTitle"),
+      desc: t("security.encryptionDesc"),
+    },
+    {
+      icon: Building2,
+      title: t("security.infraTitle"),
+      desc: t("security.infraDesc"),
+    },
   ];
 
-  const badges = ["GDPR / DSGVO", "AWS · EU Hosted", "KDG", "DSG-EKD", "Zero Retention", t("security.tlsBadge")];
+  const badges = [
+    "GDPR / DSGVO",
+    "AWS · EU Hosted",
+    "KDG",
+    "DSG-EKD",
+    "Zero Retention",
+    t("security.tlsBadge"),
+  ];
 
   return (
     <section id="security" className="bg-section-blue px-6 py-24">
@@ -818,14 +803,22 @@ const Security = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: i * 0.07, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              transition={{
+                delay: i * 0.07,
+                duration: 0.5,
+                ease: [0.16, 1, 0.3, 1],
+              }}
               className="bento-card bento-card-frosted rounded-xl p-6 flex flex-col gap-3"
             >
               <div className="flex h-55 w-55 items-center justify-center rounded-lg bg-primary/10">
                 <cred.icon className="h-5 w-5 text-primary" />
               </div>
-              <h3 className="text-sm font-semibold text-foreground leading-snug">{cred.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{cred.desc}</p>
+              <h3 className="text-sm font-semibold text-foreground leading-snug">
+                {cred.title}
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {cred.desc}
+              </p>
             </motion.div>
           ))}
         </div>
@@ -844,45 +837,75 @@ const ROISection = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
   const HOURS_SAVED_PER_CASE = 3.75; // 4h manual − 0.25h with BriefXtract
   const WEEKS_PER_YEAR = 48;
 
-  const hoursSavedPerWeek = Math.round(counselors * clientsPerWeek * HOURS_SAVED_PER_CASE);
+  const hoursSavedPerWeek = Math.round(
+    counselors * clientsPerWeek * HOURS_SAVED_PER_CASE,
+  );
   const hoursSavedPerYear = hoursSavedPerWeek * WEEKS_PER_YEAR;
   const eurosSaved = hoursSavedPerYear * hourlyRate;
 
   const fmt = (n: number) => n.toLocaleString("de-DE");
   const fmtEur = (n: number) =>
-    new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
+    new Intl.NumberFormat("de-DE", {
+      style: "currency",
+      currency: "EUR",
+      maximumFractionDigits: 0,
+    }).format(n);
 
   const sliders = [
     {
       label: t("roi.calc_counselors"),
       value: counselors,
-      min: 1, max: 50, step: 1,
+      min: 1,
+      max: 50,
+      step: 1,
       display: String(counselors),
       onChange: (v: number) => setCounselors(v),
-      minLabel: "1", maxLabel: "50",
+      minLabel: "1",
+      maxLabel: "50",
     },
     {
       label: t("roi.calc_clients"),
       value: clientsPerWeek,
-      min: 1, max: 20, step: 1,
+      min: 1,
+      max: 20,
+      step: 1,
       display: String(clientsPerWeek),
       onChange: (v: number) => setClientsPerWeek(v),
-      minLabel: "1", maxLabel: "20",
+      minLabel: "1",
+      maxLabel: "20",
     },
     {
       label: t("roi.calc_hourly"),
       value: hourlyRate,
-      min: 15, max: 50, step: 1,
+      min: 15,
+      max: 50,
+      step: 1,
       display: `€${hourlyRate}`,
       onChange: (v: number) => setHourlyRate(v),
-      minLabel: "€15", maxLabel: "€50",
+      minLabel: "€15",
+      maxLabel: "€50",
     },
   ];
 
   const outputs = [
-    { label: t("roi.calc_hours_week"), value: fmt(hoursSavedPerWeek), unit: "h", highlight: false },
-    { label: t("roi.calc_hours_year"), value: fmt(hoursSavedPerYear), unit: "h / yr", highlight: false },
-    { label: t("roi.calc_savings"), value: fmtEur(eurosSaved), unit: "", highlight: true },
+    {
+      label: t("roi.calc_hours_week"),
+      value: fmt(hoursSavedPerWeek),
+      unit: "h",
+      highlight: false,
+    },
+    {
+      label: t("roi.calc_hours_year"),
+      value: fmt(hoursSavedPerYear),
+      unit: "h / yr",
+      highlight: false,
+    },
+    {
+      label: t("roi.calc_savings"),
+      value: fmtEur(eurosSaved),
+      unit: "",
+      highlight: true,
+    },
   ];
 
   return (
@@ -914,14 +937,17 @@ const ROISection = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
           className="bento-card bento-card-frosted rounded-2xl p-8 mb-5"
         >
           <div className="grid md:grid-cols-2 gap-10 items-start">
-
             {/* Left — sliders */}
             <div className="flex flex-col gap-8">
               {sliders.map((s) => (
                 <div key={s.label}>
                   <div className="flex items-center justify-between mb-3">
-                    <label className="text-sm font-medium text-foreground">{s.label}</label>
-                    <span className="text-lg font-bold text-primary tabular-nums">{s.display}</span>
+                    <label className="text-sm font-medium text-foreground">
+                      {s.label}
+                    </label>
+                    <span className="text-lg font-bold text-primary tabular-nums">
+                      {s.display}
+                    </span>
                   </div>
                   <input
                     type="range"
@@ -948,22 +974,28 @@ const ROISection = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
               {outputs.map((o) => (
                 <div
                   key={o.label}
-                  className={`rounded-xl p-5 border ${o.highlight
-                    ? "bg-primary/10 border-primary/20"
-                    : "bg-surface-1/60 border-foreground/10"
-                    }`}
+                  className={`rounded-xl p-5 border ${
+                    o.highlight
+                      ? "bg-primary/10 border-primary/20"
+                      : "bg-surface-1/60 border-foreground/10"
+                  }`}
                 >
-                  <p className="text-xs text-muted-foreground mb-1.5">{o.label}</p>
-                  <p className={`text-4xl font-bold tabular-nums ${o.highlight ? "text-primary" : "text-foreground"}`}>
+                  <p className="text-xs text-muted-foreground mb-1.5">
+                    {o.label}
+                  </p>
+                  <p
+                    className={`text-4xl font-bold tabular-nums ${o.highlight ? "text-primary" : "text-foreground"}`}
+                  >
                     {o.value}
                   </p>
                   {o.unit && (
-                    <p className="text-xs text-muted-foreground/50 mt-1">{o.unit}</p>
+                    <p className="text-xs text-muted-foreground/50 mt-1">
+                      {o.unit}
+                    </p>
                   )}
                 </div>
               ))}
             </div>
-
           </div>
         </motion.div>
 
@@ -1004,7 +1036,10 @@ const Footer = () => {
 
   const companyLinks = [
     { href: "#about", label: t("footer.link_about") },
-    { href: `mailto:${t("about.contactEmail")}`, label: t("footer.link_contact") },
+    {
+      href: `mailto:${t("about.contactEmail")}`,
+      label: t("footer.link_contact"),
+    },
     { href: "#", label: t("footer.link_privacy") },
     { href: "#", label: t("footer.link_terms") },
   ];
@@ -1105,7 +1140,10 @@ const Footer = () => {
             </p>
             <div className="space-y-2.5">
               {complianceBadges.map((badge) => (
-                <div key={badge} className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <div
+                  key={badge}
+                  className="flex items-center gap-1.5 text-sm text-muted-foreground"
+                >
                   <CheckCheck className="h-3.5 w-3.5 text-status-online shrink-0" />
                   {badge}
                 </div>
@@ -1133,7 +1171,7 @@ const Index = () => {
       <Navbar onRequestDemo={() => setDemoOpen(true)} />
       <Hero onRequestDemo={() => setDemoOpen(true)} />
       <StatsBar />
-      <ProblemVisual />
+      <ProblemPage />
       <Features />
       <Security />
       <BeforeAfter />
