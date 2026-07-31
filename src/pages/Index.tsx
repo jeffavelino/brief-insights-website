@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BentoGrid } from "@/components/BentoGrid";
 import { BentoCard } from "@/components/BentoCard";
@@ -26,165 +27,15 @@ import {
 import ThemeToggle from "@/components/ThemeToggle";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import DemoModal from "@/components/DemoModal";
+import { smoothScrollToId } from "@/lib/scrollToHash";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import digitalSolution from "@/assets/Gemini_Generated_Digital_Solution.png";
 import logoImg from "@/assets/Brief_Insights_name_color.png";
 import heroVideo from "@/assets/Video_Generation_for_Counselor_Paperwork.mp4";
-import ProblemPage from "@/components/Organism/ProblemPage";
+import ProblemPage from "@/components/Templates/ProblemPage";
 import Header from "@/components/Organism/Header";
 import Footer from "@/components/Organism/Footer";
-
-// ─── AnimatedWords ────────────────────────────────────────────────────────────
-const AnimatedWords = ({
-  text,
-  className,
-  delay = 0,
-  animate: useAnimateMode = false,
-}: {
-  text: string;
-  className?: string;
-  delay?: number;
-  animate?: boolean;
-}) => {
-  const words = text.split(" ");
-  return (
-    <span className={className}>
-      {words.map((word, i) => {
-        const sharedProps = {
-          initial: { opacity: 0, y: 20, x: i % 2 === 0 ? -15 : 15 },
-          transition: {
-            duration: 0.6,
-            delay: delay + i * 0.08,
-            ease: [0.16, 1, 0.3, 1],
-          },
-          className: "inline-block mr-[0.25em]",
-        };
-        if (useAnimateMode) {
-          return (
-            <motion.span
-              key={i}
-              {...sharedProps}
-              animate={{ opacity: 1, y: 0, x: 0 }}
-            >
-              {word}
-            </motion.span>
-          );
-        }
-        return (
-          <motion.span
-            key={i}
-            {...sharedProps}
-            whileInView={{ opacity: 1, y: 0, x: 0 }}
-            viewport={{ once: true }}
-          >
-            {word}
-          </motion.span>
-        );
-      })}
-    </span>
-  );
-};
-
-// ─── Navbar ────────────────────────────────────────────────────────────────
-const Navbar = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
-  const { t } = useTranslation();
-
-  const navLinks = [
-    { href: "#problem", label: t("nav.problem") },
-    { href: "#product", label: t("nav.product") },
-    { href: "#security", label: t("nav.security") },
-    { href: "#before-after", label: t("nav.results") },
-    { href: "#about", label: t("nav.about") },
-  ];
-
-  return (
-    <motion.nav
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.1 }}
-      className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-sm border-b border-foreground/5"
-    >
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-        <a href="#" className="flex items-center shrink-0">
-          <div className="overflow-hidden h-9 w-auto flex items-start">
-            <img
-              src={logoImg}
-              alt="BriefInsights"
-              className="h-16 w-auto object-contain dark:brightness-[1.15]"
-              style={{
-                transform: "translateY(-14px) scale(1.25)",
-                transformOrigin: "top center",
-              }}
-            />
-          </div>
-        </a>
-
-        {/* Desktop nav links */}
-        <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="hover:text-foreground transition-colors"
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-1">
-          <LanguageSwitcher />
-          <ThemeToggle />
-
-          {/* Desktop CTA */}
-          <button
-            onClick={onRequestDemo}
-            className="hidden md:inline-flex text-sm font-medium text-primary-foreground bg-primary px-4 py-1.5 rounded-lg hover:opacity-90 transition-opacity ml-2"
-          >
-            {t("nav.requestDemo")}
-          </button>
-
-          {/* Mobile hamburger */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:hidden h-9 w-9 ml-1"
-              >
-                <Menu className="h-4 w-4" />
-                <span className="sr-only">Open menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent
-              side="right"
-              className="w-64 flex flex-col gap-6 pt-12"
-            >
-              <nav className="flex flex-col gap-4">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </nav>
-              <button
-                onClick={onRequestDemo}
-                className="text-sm font-medium text-primary-foreground bg-primary px-4 py-2 rounded-lg hover:opacity-90 transition-opacity text-center"
-              >
-                {t("nav.requestDemo")}
-              </button>
-            </SheetContent>
-          </Sheet>
-        </div>
-      </div>
-    </motion.nav>
-  );
-};
 
 // ─── Hero ───────────────────────────────────────────────────────────────────
 const Hero = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
@@ -314,133 +165,6 @@ const StatsBar = () => {
           </div>
         ))}
       </motion.div>
-    </section>
-  );
-};
-
-// ─── Features ───────────────────────────────────────────────────────────────
-const Features = () => {
-  const { t } = useTranslation();
-
-  const extractionRows = [
-    { label: t("bentoMock.creditor"), value: "Vodafone GmbH", conf: "99%" },
-    { label: t("bentoMock.amount"), value: "€ 847.30", conf: "98%" },
-    { label: t("bentoMock.fileNo"), value: "RIV-2024-88412", conf: "97%" },
-    { label: t("bentoMock.dueDate"), value: "15 Jan 2025", conf: "96%" },
-  ];
-
-  const caseDocuments = [
-    { label: t("bentoMock.doc1"), linked: true },
-    { label: t("bentoMock.doc2"), linked: true },
-    { label: t("bentoMock.doc3"), linked: false },
-  ];
-
-  return (
-    <section id="product" className="bg-section-blue px-6 py-24">
-      <div className="max-w-6xl mx-auto mb-12">
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-xs font-semibold uppercase tracking-widest text-foreground/50 mb-4"
-        >
-          {t("features.label")}
-        </motion.p>
-        <h2 className="font-serif italic text-5xl md:text-6xl text-foreground leading-tight">
-          <AnimatedWords
-            text={t("features.title1")}
-            className="block"
-            delay={0.1}
-          />
-          <AnimatedWords
-            text={t("features.title2")}
-            className="block text-foreground/50"
-            delay={0.3}
-          />
-        </h2>
-      </div>
-
-      <BentoGrid>
-        <BentoCard
-          title={t("features.extraction")}
-          description={t("features.extractionDesc")}
-          icon={ScanText}
-          colSpan={2}
-          className="bento-card-frosted"
-        >
-          <div className="h-32 rounded-lg bg-surface-3/50 border border-border/50 p-4 font-mono text-xs text-muted-foreground space-y-2 overflow-hidden">
-            {extractionRows.map((row, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -8 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="flex items-center justify-between"
-              >
-                <span className="text-muted-foreground/60 w-24 shrink-0">
-                  {row.label}
-                </span>
-                <span className="text-foreground flex-1">{row.value}</span>
-                <span className="text-status-online">{row.conf}</span>
-              </motion.div>
-            ))}
-          </div>
-        </BentoCard>
-
-        <BentoCard
-          title={t("features.gdpr")}
-          description={t("features.gdprDesc")}
-          icon={ShieldCheck}
-          className="bento-card-frosted"
-        />
-
-        <BentoCard
-          title={t("features.urgency")}
-          description={t("features.urgencyDesc")}
-          icon={FileWarning}
-          className="bento-card-frosted"
-        />
-
-        <BentoCard
-          title={t("features.caseEngine")}
-          description={t("features.caseEngineDesc")}
-          icon={Workflow}
-          colSpan={2}
-          className="bento-card-frosted"
-        >
-          <div className="h-20 rounded-lg bg-surface-3/50 border border-border/50 flex items-center px-4 gap-3 flex-wrap">
-            {caseDocuments.map((item) => (
-              <div
-                key={item.label}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-surface-2 border border-border/50 text-xs text-muted-foreground"
-              >
-                <span
-                  className={`h-1.5 w-1.5 rounded-full ${item.linked ? "bg-status-online" : "bg-primary"}`}
-                />
-                {item.label}
-              </div>
-            ))}
-            <div className="text-xs text-muted-foreground/50 ml-auto">
-              {t("bentoMock.masterCase")}
-            </div>
-          </div>
-        </BentoCard>
-
-        <BentoCard
-          title={t("features.faster")}
-          description={t("features.fasterDesc")}
-          icon={Zap}
-          className="bento-card-frosted"
-        />
-
-        <BentoCard
-          title={t("features.vivendi")}
-          description={t("features.vivendiDesc")}
-          icon={Plug}
-          className="bento-card-frosted"
-        />
-      </BentoGrid>
     </section>
   );
 };
@@ -607,123 +331,6 @@ const BeforeAfter = () => {
             </div>
           </div>
         </motion.div>
-      </div>
-    </section>
-  );
-};
-
-// ─── Security ────────────────────────────────────────────────────────────────
-const Security = () => {
-  const { t } = useTranslation();
-
-  const credentials = [
-    {
-      icon: ShieldCheck,
-      title: t("security.gdprTitle"),
-      desc: t("security.gdprDesc"),
-    },
-    {
-      icon: Server,
-      title: t("security.hostingTitle"),
-      desc: t("security.hostingDesc"),
-    },
-    {
-      icon: Trash2,
-      title: t("security.retentionTitle"),
-      desc: t("security.retentionDesc"),
-    },
-    {
-      icon: Landmark,
-      title: t("security.churchTitle"),
-      desc: t("security.churchDesc"),
-    },
-    {
-      icon: Lock,
-      title: t("security.encryptionTitle"),
-      desc: t("security.encryptionDesc"),
-    },
-    {
-      icon: Building2,
-      title: t("security.infraTitle"),
-      desc: t("security.infraDesc"),
-    },
-  ];
-
-  const badges = [
-    "GDPR / DSGVO",
-    "AWS · EU Hosted",
-    "KDG",
-    "DSG-EKD",
-    "Zero Retention",
-    t("security.tlsBadge"),
-  ];
-
-  return (
-    <section id="security" className="bg-section-blue px-6 py-24">
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-10"
-        >
-          <p className="text-xs font-semibold uppercase tracking-widest text-foreground/50 mb-4">
-            {t("security.label")}
-          </p>
-          <h2 className="font-serif italic text-4xl md:text-5xl text-foreground leading-tight mb-4 max-w-2xl">
-            <AnimatedWords text={t("security.title")} delay={0.1} />
-          </h2>
-          <p className="text-base text-muted-foreground max-w-xl leading-relaxed">
-            {t("security.subtitle")}
-          </p>
-        </motion.div>
-
-        {/* Trust badge strip */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.15 }}
-          className="flex flex-wrap gap-2 mb-10"
-        >
-          {badges.map((badge) => (
-            <div
-              key={badge}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-foreground/15 bg-background/60 backdrop-blur-sm text-xs font-medium text-foreground/70"
-            >
-              <CheckCheck className="h-3 w-3 text-status-online shrink-0" />
-              {badge}
-            </div>
-          ))}
-        </motion.div>
-
-        {/* Credential grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {credentials.map((cred, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{
-                delay: i * 0.07,
-                duration: 0.5,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="bento-card bento-card-frosted rounded-xl p-6 flex flex-col gap-3"
-            >
-              <div className="flex h-55 w-55 items-center justify-center rounded-lg bg-primary/10">
-                <cred.icon className="h-5 w-5 text-primary" />
-              </div>
-              <h3 className="text-sm font-semibold text-foreground leading-snug">
-                {cred.title}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {cred.desc}
-              </p>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -925,12 +532,19 @@ const ROISection = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
   );
 };
 
-// ─── Footer ──────────────────────────────────────────────────────────────────
-
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 const Index = () => {
   const [demoOpen, setDemoOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = location.hash.slice(1);
+    // small delay lets images/video/motion elements settle their layout
+    // before we measure the target position, avoiding a jumpy scroll
+    const timeout = setTimeout(() => smoothScrollToId(id), 120);
+    return () => clearTimeout(timeout);
+  }, [location.hash]);
 
   return (
     <div className="grain-overlay min-h-screen bg-background">
@@ -938,8 +552,6 @@ const Index = () => {
       <Hero onRequestDemo={() => setDemoOpen(true)} />
       <StatsBar />
       <ProblemPage />
-      <Features />
-      <Security />
       <BeforeAfter />
       <ROISection onRequestDemo={() => setDemoOpen(true)} />
       <Footer />
