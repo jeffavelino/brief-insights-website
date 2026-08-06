@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { CheckCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import AnimatedWords from "../Atoms/AnimatedWords";
-import logoImg from "@/assets/brief-insights-logo.png";
+import logoImg from "@/assets/Brief_Insights_name_color.png";
 
 
 function Footer () {

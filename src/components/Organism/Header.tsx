@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
+import { useLocation, useNavigate } from "react-router-dom";
 import logoImg from "@/assets/Brief_Insights_name_color.png";
 import LanguageSwitcher from "../LanguageSwitcher";
 import ThemeToggle from "../ThemeToggle";
@@ -9,18 +10,40 @@ import { Button } from "../ui/button";
 import { Menu } from "lucide-react";
 import OrangeButton from "../Atoms/OrangeButton";
 import DemoModal from "../DemoModal";
+import { smoothScrollToId } from "@/lib/scrollToHash";
 
 function Header() {
   const { t } = useTranslation();
   const [demoOpen, setDemoOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const navLinks = [
     { href: "/#problem", label: t("nav.problem") },
-    { href: "#product", label: t("nav.product") },
-    { href: "#security", label: t("nav.security") },
-    { href: "#before-after", label: t("nav.results") },
-    { href: "about", label: t("nav.about") },
+    { href: "/product", label: t("nav.product") },
+    { href: "/security", label: t("nav.security") },
+    { href: "/#before-after", label: t("nav.results") },
+    { href: "/about", label: t("nav.about") },
   ];
+
+  // When already on the target page, scroll smoothly ourselves instead of
+  // letting the browser jump instantly to the anchor
+  const handleNavClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    const hashIndex = href.indexOf("#");
+    if (hashIndex === -1) return;
+
+    const targetPath = href.slice(0, hashIndex) || "/";
+    const id = href.slice(hashIndex + 1);
+
+    if (location.pathname === targetPath) {
+      event.preventDefault();
+      navigate(`${targetPath}#${id}`);
+      smoothScrollToId(id);
+    }
+  };
 
   return (
     <>
@@ -51,6 +74,7 @@ function Header() {
               <a
                 key={link.href}
                 href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className="hover:text-foreground transition-colors"
               >
                 {link.label}
@@ -86,6 +110,7 @@ function Header() {
                     <a
                       key={link.href}
                       href={link.href}
+                      onClick={(e) => handleNavClick(e, link.href)}
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {link.label}
