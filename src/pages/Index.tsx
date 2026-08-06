@@ -1,41 +1,15 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { BentoGrid } from "@/components/BentoGrid";
-import { BentoCard } from "@/components/BentoCard";
-import {
-  ScanText,
-  ShieldCheck,
-  Zap,
-  Workflow,
-  FileWarning,
-  Plug,
-  ArrowRight,
-  Clock,
-  CheckCheck,
-  MoveRight,
-  Menu,
-  Mail,
-  Server,
-  Trash2,
-  Lock,
-  Building2,
-  Landmark,
-  TrendingUp,
-} from "lucide-react";
-import ThemeToggle from "@/components/ThemeToggle";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { ArrowRight, Clock, CheckCheck, MoveRight } from "lucide-react";
 import DemoModal from "@/components/DemoModal";
 import { smoothScrollToId } from "@/lib/scrollToHash";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import digitalSolution from "@/assets/Gemini_Generated_Digital_Solution.png";
-import logoImg from "@/assets/Brief_Insights_name_color.png";
 import heroVideo from "@/assets/Video_Generation_for_Counselor_Paperwork.mp4";
 import ProblemPage from "@/components/Templates/ProblemPage";
 import Header from "@/components/Organism/Header";
 import Footer from "@/components/Organism/Footer";
+import AnimatedWords from "@/components/Atoms/AnimatedWords";
 
 // ─── Hero ───────────────────────────────────────────────────────────────────
 const Hero = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
