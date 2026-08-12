@@ -6,8 +6,16 @@ import { BentoCard } from "../BentoCard";
 import { BentoGrid } from "../BentoGrid";
 
 
+const PRODUCT_VIDEO_IDS: Record<string, string> = {
+  en: "RAIj87wewqQ",
+  de: "r6BsRdC8cTg",
+};
+
 function ProductPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const videoId =
+    PRODUCT_VIDEO_IDS[i18n.language] ?? PRODUCT_VIDEO_IDS.en;
 
   const extractionRows = [
     { label: t("bentoMock.creditor"), value: "Vodafone GmbH", conf: "99%" },
@@ -46,6 +54,21 @@ function ProductPage() {
           />
         </h2>
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="max-w-6xl mx-auto mb-12 aspect-video rounded-xl overflow-hidden border border-border/50 shadow-lg"
+      >
+        <iframe
+          className="w-full h-full"
+          src={`https://www.youtube.com/embed/${videoId}`}
+          title={t("features.videoTitle", "BriefXtract Platform")}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </motion.div>
 
       <BentoGrid>
         <BentoCard

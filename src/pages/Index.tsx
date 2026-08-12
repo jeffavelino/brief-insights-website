@@ -36,6 +36,7 @@ import heroVideo from "@/assets/Video_Generation_for_Counselor_Paperwork.mp4";
 import ProblemPage from "@/components/Templates/ProblemPage";
 import Header from "@/components/Organism/Header";
 import Footer from "@/components/Organism/Footer";
+import AnimatedWords from "@/components/Atoms/AnimatedWords";
 
 // ─── Hero ───────────────────────────────────────────────────────────────────
 const Hero = ({ onRequestDemo }: { onRequestDemo: () => void }) => {
