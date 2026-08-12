@@ -8,9 +8,10 @@ import {
   ShieldCheck,
   Trash2,
   Lock,
-  CheckCheck,
 } from "lucide-react";
 import AnimatedWords from "../Atoms/AnimatedWords";
+import Badges from "../Atoms/Badges";
+import SecurityCard from "../Molecule/SecurityCard";
 
 function SecurityPage() {
   const { t } = useTranslation();
@@ -85,44 +86,15 @@ function SecurityPage() {
           transition={{ delay: 0.15 }}
           className="flex flex-wrap gap-2 mb-10"
         >
-          {badges.map((badge) => (
-            //componentizar as badges
-            <div
-              key={badge}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-foreground/15 bg-background/60 backdrop-blur-sm text-xs font-medium text-foreground/70"
-            >
-              <CheckCheck className="h-3 w-3 text-status-online shrink-0" />
-              {badge}
-            </div>
+          {badges.map((badge, indice) => (
+            <Badges key={indice} badge={badge} />
           ))}
         </motion.div>
 
         {/* Credential grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {credentials.map((cred, i) => (
-            //componentizar os cards das credenciais
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{
-                delay: i * 0.07,
-                duration: 0.5,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="bento-card bento-card-frosted rounded-xl p-6 flex flex-col gap-3"
-            >
-              <div className="flex h-55 w-55 items-center justify-center rounded-lg bg-primary/10">
-                <cred.icon className="h-5 w-5 text-primary" />
-              </div>
-              <h3 className="text-sm font-semibold text-foreground leading-snug">
-                {cred.title}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {cred.desc}
-              </p>
-            </motion.div>
+          {credentials.map((cred, indice) => (
+            <SecurityCard cred={cred} i={indice} />
           ))}
         </div>
       </div>
